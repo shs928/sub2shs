@@ -11,7 +11,7 @@
       <!-- Custom Logo or Default Logo -->
       <router-link
         :to="homePath"
-        class="sidebar-logo flex h-9 w-9 items-center justify-center overflow-hidden rounded-xl shadow-glow transition-opacity hover:opacity-80"
+        class="sidebar-logo flex h-9 w-9 items-center justify-center overflow-hidden rounded-xl transition-opacity hover:opacity-80"
         @click="handleMenuItemClick(homePath)"
       >
         <img v-if="settingsLoaded" :src="siteLogo || '/logo.svg'" alt="Logo" class="h-full w-full object-contain" />
@@ -25,7 +25,8 @@
           {{ siteName }}
         </router-link>
         <!-- Version Badge -->
-        <VersionBadge :version="siteVersion" />
+        <VersionBadge v-if="isAdmin" :version="siteVersion" />
+        <span v-else class="text-[10px] tracking-widest text-gray-500">BY BLESSING HUB</span>
       </div>
     </div>
 
@@ -149,6 +150,25 @@
 
     <!-- Bottom Section -->
     <div class="mt-auto border-t border-gray-100 p-3 dark:border-dark-800">
+      <router-link
+        to="/guide"
+        class="sidebar-link mb-1"
+        :class="{ 'sidebar-link-collapsed': sidebarCollapsed }"
+        :title="t('blessingShell.guide')"
+        @click="handleMenuItemClick('/guide')"
+      >
+        <Icon name="book" class="h-5 w-5 flex-shrink-0" />
+        <span class="sidebar-label" :class="{ 'sidebar-label-collapsed': sidebarCollapsed }" :aria-hidden="sidebarCollapsed">{{ t('blessingShell.guide') }}</span>
+      </router-link>
+      <a
+        href="https://blessingshs.cc.cd/"
+        class="sidebar-link mb-2"
+        :class="{ 'sidebar-link-collapsed': sidebarCollapsed }"
+        :title="t('blessingShell.hub')"
+      >
+        <Icon name="arrowLeft" class="h-5 w-5 flex-shrink-0" />
+        <span class="sidebar-label" :class="{ 'sidebar-label-collapsed': sidebarCollapsed }" :aria-hidden="sidebarCollapsed">{{ t('blessingShell.hub') }}</span>
+      </a>
       <!-- Theme Toggle -->
       <button
         @click="toggleTheme"

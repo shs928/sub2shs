@@ -31,6 +31,16 @@ const routes: RouteRecordRaw[] = [
 
   // ==================== Public Routes ====================
   {
+    path: '/guide',
+    name: 'ConnectionGuide',
+    component: () => import('@/views/GuideView.vue'),
+    meta: {
+      requiresAuth: false,
+      title: 'Connection Guide',
+      titleKey: 'blessingGuide.title'
+    }
+  },
+  {
     path: '/home',
     name: 'Home',
     component: () => import('@/views/HomeView.vue'),

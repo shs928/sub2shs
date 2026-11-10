@@ -56,7 +56,7 @@ function mountHome(settings: Record<string, unknown> = {}) {
 }
 
 function compactDestination(wrapper: ReturnType<typeof mountHome>) {
-  return wrapper.get('[data-testid="compact-home"]').findComponent(RouterLinkStub).props('to')
+  return wrapper.getComponent('[data-testid="home-primary-action"]').props('to')
 }
 
 function modelPlazaDestination(wrapper: ReturnType<typeof mountHome>) {
@@ -108,7 +108,7 @@ describe('HomeView compact mode', () => {
     const wrapper = mountHome(settings)
 
     expect(wrapper.find('[data-testid="compact-home"]').exists()).toBe(false)
-    expect(wrapper.find('.terminal-container').exists()).toBe(true)
+    expect(wrapper.find('[data-testid="blessing-home"]').exists()).toBe(true)
   })
 
   it('links unauthenticated visitors to login', () => {
@@ -180,5 +180,22 @@ describe('HomeView compact mode', () => {
     })
 
     expect(modelPlazaDestination(wrapper)).toBeUndefined()
+  })
+
+  it('keeps the connection guide accessible without model plaza access', () => {
+    const wrapper = mountHome({ model_plaza_enabled: false })
+
+    expect(wrapper.findAllComponents(RouterLinkStub).some((link) => link.props('to') === '/guide')).toBe(true)
+    expect(modelPlazaDestination(wrapper)).toBeUndefined()
+  })
+
+  it('preserves the key management destination through sign-in', () => {
+    const wrapper = mountHome()
+    const keysLink = wrapper.findAllComponents(RouterLinkStub).find((link) => {
+      const destination = link.props('to')
+      return typeof destination === 'object' && destination.query?.redirect === '/keys'
+    })
+
+    expect(keysLink?.props('to')).toEqual({ path: '/login', query: { redirect: '/keys' } })
   })
 })

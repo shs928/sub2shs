@@ -1,0 +1,36 @@
+/* Shared workspace details. Page-specific layouts live with their Vue views. */
+.hub-welcome {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 28px 32px;
+  border: 1px solid var(--hub-border);
+  border-radius: 20px;
+  background: var(--hub-sage);
+  color: var(--hub-text);
+}
+.hub-welcome .hub-eyebrow {
+  margin: 0 0 12px;
+  color: var(--hub-muted);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .15em;
+}
+.hub-welcome h2 { font-size: clamp(20px, 2vw, 26px); font-weight: 650; letter-spacing: -.025em; }
+.hub-welcome p { margin-top: 10px; color: var(--hub-muted); font-size: 13px; line-height: 1.8; }
+.hub-welcome .btn { flex-shrink: 0; }
+.hub-workspace .sidebar-header { height: 80px; }
+.hub-workspace > div > header { background: var(--hub-bg); border-color: var(--hub-border); }
+.hub-workspace > div > header > div { min-height: 80px; }
+.hub-workspace .sidebar-link { border-radius: 10px; }
+
+@media (max-width: 639px) {
+  .hub-welcome { align-items: flex-start; flex-direction: column; padding: 24px; gap: 18px; }
+  .hub-workspace > div > header > div { min-height: 64px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+}

@@ -1,6 +1,14 @@
 <template>
   <AppLayout>
     <div class="space-y-6">
+      <section class="hub-welcome">
+        <div>
+          <p class="hub-eyebrow">{{ t('blessingShell.workspace') }}</p>
+          <h2>{{ t('blessingShell.welcome') }}</h2>
+          <p>{{ t('blessingShell.welcomeDescription') }}</p>
+        </div>
+        <router-link to="/guide" class="btn btn-secondary">{{ t('blessingShell.start') }} <span aria-hidden="true">↗</span></router-link>
+      </section>
       <div v-if="loading" class="flex items-center justify-center py-12"><LoadingSpinner /></div>
       <template v-else-if="stats">
         <UserDashboardStats :stats="stats" :balance="user?.balance || 0" :is-simple="authStore.isSimpleMode" :platform-quotas="platformQuotas" />
@@ -15,6 +23,7 @@
 </template>
 
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n'
 import { ref, computed, onMounted } from 'vue'; import { useAuthStore } from '@/stores/auth'; import { usageAPI, type UserDashboardStats as UserStatsType } from '@/api/usage'
 import AppLayout from '@/components/layout/AppLayout.vue'; import LoadingSpinner from '@/components/common/LoadingSpinner.vue'
 import UserDashboardStats from '@/components/user/dashboard/UserDashboardStats.vue'; import UserDashboardCharts from '@/components/user/dashboard/UserDashboardCharts.vue'
@@ -24,6 +33,7 @@ import { getMyPlatformQuotas } from '@/api/user'
 import { formatDateLocalInput } from '@/utils/format'
 
 const authStore = useAuthStore(); const user = computed(() => authStore.user)
+const { t } = useI18n()
 const stats = ref<UserStatsType | null>(null); const loading = ref(false); const loadingUsage = ref(false); const loadingCharts = ref(false)
 const trendData = ref<TrendDataPoint[]>([]); const modelStats = ref<ModelStat[]>([]); const recentUsage = ref<UsageLog[]>([])
 const platformQuotas = ref<PlatformQuotaItem[] | null>(null)

@@ -6,6 +6,10 @@ import channelMonitorV2 from './channelMonitorV2'
 import batchImage from './batchImage'
 import admin from './admin'
 import misc from './misc'
+import blessingHome from './blessingHome'
+import blessingAuth from './blessingAuth'
+import blessingGuide from './blessingGuide'
+import blessingShell from './blessingShell'
 
 export default {
   adminAccessKeys,
@@ -16,4 +20,8 @@ export default {
   ...batchImage,
   admin,
   ...misc,
+  ...blessingHome,
+  ...blessingAuth,
+  ...blessingGuide,
+  ...blessingShell,
 }
