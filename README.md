@@ -12,6 +12,8 @@
 
 Blessing API 是 Blessing Hub 的 AI API 服务。本仓库 `shs928/sub2shs` 基于 [Sub2API](https://github.com/Wei-Shaw/sub2api) 定制，维护自己的品牌界面、接入指引和发布流程。
 
+Hub 的[项目导航](https://blessingshs.cc.cd/projects/)、搜索和 RSS 统一使用 **Blessing API**，介绍密钥管理、接入指南、用量与余额查询和卡密充值。对外名称与图标保持一致；仓库名和既有部署目录保持兼容。
+
 ## 功能
 
 - 首页、公开接入指南，以及 OpenAI 兼容和 Anthropic 协议的客户端配置示例。

@@ -162,3 +162,21 @@ sudo sh /var/backups/blessing-api/20261112T092745Z/rollback.sh
 ```
 
 平台商品上下架、订单与已发放卡密的使用记录独立维护。
+
+### 2026-11-12 Hub 品牌协同发布
+
+发布编号 `20261112T125210Z`，API 界面源码 `f4fa9e53736c8a316491ac6c7ca03444c7f627b5`，已重新发布到 [Blessing API](https://api.blessingshs.cc.cd/)；Hub 同期部署源码 `116230508ff9646b170692fec588ab37f7c42b63`。
+
+- Hub 项目卡片、详情、搜索、RSS、SEO 元信息和无 JavaScript 提示统一使用 **Blessing API**，补充密钥管理、接入指南、用量与余额查询和五档卡密充值说明。
+- Hub 项目标识为 `blessing-api`，兼容原收藏标识；仓库名、服务名和既有部署路径保持兼容。API README 与主站说明保持一致。
+- API 重新执行生产兼容构建，相关测试、TypeScript 与 Vite 通过；静态目录为 `/var/www/blessing-api/releases/20261112T125210Z`，入口 HTML SHA256 为 `62c2fa6c77c117eab88ca7610b154ea6aaa5c855aa8856ab7c6b86b2b44ab860`。
+- 当前 API 界面内容与上次卡密发布一致；后端仍为 `0.2.18` / `ac1b8f1271be0d674fa6f074403c1410f30a3a81`，容器 ID 和启动时间保持一致。
+- 12 项源站健康与鉴权探针发布前后一致；卡密购买入口、五档面额和原生在线支付关闭的配置保持有效。
+- 两站共 23 项公网 HTTPS 检查通过：Hub 新品牌文案、页面与 RSS、下载、API 首页/指南/充值入口、图标和静态资源均正常；公开设置确认卡密入口启用、购买分类链接正确、原生在线支付关闭。酒馆与历史站首页内容哈希与发布前一致。
+
+API 备份目录：`/var/backups/blessing-api/20261112T125210Z`；Hub 备份目录：`/var/www/blessing-hub/backups/20261112T125210Z`。分别保存配置、版本状态、验收记录和回滚脚本；原有卡密库存及用户余额未修改。
+
+```sh
+sudo sh /var/backups/blessing-api/20261112T125210Z/rollback.sh
+sudo sh /var/www/blessing-hub/backups/20261112T125210Z/rollback.sh
+```
