@@ -130,3 +130,35 @@ sudo sh /var/backups/blessing-api/20261112T080821Z/rollback.sh
 - `frontend/src/components/common/CardRechargePanel.vue` 提供购买说明和面额展示；`utils/cardRecharge.ts` 只接受平台的 HTTPS 公开店铺、分类或商品链接，拒绝商家后台地址和含用户密码的 URL。
 - 首页和 `/redeem` 根据有效配置展示入口；购买页在新标签页打开，不向卡密平台附带登录令牌、用户邮箱或本站密钥。
 - 卡密售出后由用户登录 `/redeem` 兑换。付款回跳不作为入账凭据，现有后端负责验证、单次使用和余额入账。
+
+### 2026-11-12 卡密充值发布
+
+发布编号 `20261112T092745Z`，功能源码提交 `d83263c2b67556f556d1ebefe5541bda3a60fb1d`，已发布到 `https://api.blessingshs.cc.cd`。
+
+| 人民币售价 | 平台额度 | 商品链接 | 首批库存 |
+| --- | --- | --- | --- |
+| 1 元 | $1 | [1 元卡](https://wzyp.cn/item/a5lmya) | 10 张 |
+| 5 元 | $5 | [5 元卡](https://wzyp.cn/item/ra8yom) | 10 张 |
+| 10 元 | $10 | [10 元卡](https://wzyp.cn/item/uirjek) | 10 张 |
+| 20 元 | $20 | [20 元卡](https://wzyp.cn/item/qh7bcv) | 10 张 |
+| 50 元 | $50 | [50 元卡](https://wzyp.cn/item/j80au8) | 10 张 |
+
+五种商品均属于 `Blessing API 额度卡` 分类，分类购买链接为 `https://wzyp.cn/shop/M5WZ72DP/p8rlue`。后台确认五档商品均在销售中，各有 10 张库存。50 个兑换码均通过本项目管理后台生成，类型为余额、无过期时间；已逐档核对唯一性、面值和库存文件哈希，验证时全部未使用。
+
+站点已启用卡密购买入口，原生在线支付保持关闭。首页和侧栏提供「卡密充值」，`/redeem` 展示五档面额、1:1 说明、购买步骤和公开店铺链接。浏览器确认购买按钮会打开正确的分类页；1 元商品页显示自动发货、支付宝和微信选项。实际付费订单、付款及商用库存兑换未执行。
+
+- 前端目录：`/var/www/blessing-api/releases/20261112T092745Z`；入口脚本 `/assets/index-CUyB6zML.js`。
+- 入口 HTML SHA256：`62c2fa6c77c117eab88ca7610b154ea6aaa5c855aa8856ab7c6b86b2b44ab860`。
+- 93 项相关测试、TypeScript、ESLint 和生产兼容构建通过；12 项源站探针与 10 项公网 HTTPS 检查通过。
+- 后端仍为 `0.2.18`，容器 ID 和启动时间保持一致；Hub、酒馆、历史站的首页内容哈希与发布前一致。
+- 发布备份：`/var/backups/blessing-api/20261112T092745Z`，含原配置、构建清单、入口设置备份和验收记录。
+- 卡密备份：`/var/backups/blessing-api/card-stock-20261112`，目录仅 root 可访问；库存文件和本地截图不进入 Git。
+
+需要恢复本次购买入口设置和前端时，分别执行以下受并发修改保护的回滚脚本：
+
+```sh
+sudo sh /var/backups/blessing-api/20261112T092745Z/rollback-card-settings.sh
+sudo sh /var/backups/blessing-api/20261112T092745Z/rollback.sh
+```
+
+平台商品上下架、订单与已发放卡密的使用记录独立维护。
