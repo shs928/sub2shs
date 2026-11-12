@@ -10,6 +10,7 @@ import blessingHome from './blessingHome'
 import blessingAuth from './blessingAuth'
 import blessingGuide from './blessingGuide'
 import blessingShell from './blessingShell'
+import blessingRecharge from './blessingRecharge'
 
 export default {
   adminAccessKeys,
@@ -24,4 +25,5 @@ export default {
   ...blessingAuth,
   ...blessingGuide,
   ...blessingShell,
+  ...blessingRecharge,
 }

@@ -30,6 +30,7 @@
             {{ t('nav.modelPlaza') }}
           </router-link>
           <router-link to="/guide" class="nav-link optional-nav">{{ t('blessingHome.guide') }}</router-link>
+          <router-link v-if="cardPurchaseUrl" to="/redeem" class="nav-link">{{ t('blessingRecharge.nav') }}</router-link>
           <a v-if="docUrl" :href="docUrl" target="_blank" rel="noopener noreferrer" class="nav-link optional-doc">
             {{ t('home.viewDocs') }}
           </a>
@@ -154,6 +155,7 @@ import { useAuthStore, useAppStore } from '@/stores'
 import LocaleSwitcher from '@/components/common/LocaleSwitcher.vue'
 import Icon from '@/components/icons/Icon.vue'
 import { sanitizeUrl } from '@/utils/url'
+import { getCardPurchaseUrl } from '@/utils/cardRecharge'
 import { FeatureFlags, isFeatureFlagEnabled } from '@/utils/featureFlags'
 
 const { t } = useI18n()
@@ -163,6 +165,7 @@ const siteName = computed(() => appStore.cachedPublicSettings?.site_name || appS
 const siteLogo = computed(() => sanitizeUrl(appStore.cachedPublicSettings?.site_logo || appStore.siteLogo || '', { allowRelative: true, allowDataUrl: true }))
 const siteSubtitle = computed(() => appStore.cachedPublicSettings?.site_subtitle || t('blessingHome.subtitle'))
 const docUrl = computed(() => sanitizeUrl(appStore.cachedPublicSettings?.doc_url || appStore.docUrl || ''))
+const cardPurchaseUrl = computed(() => getCardPurchaseUrl(appStore.cachedPublicSettings))
 const homeContent = computed(() => appStore.cachedPublicSettings?.home_content || '')
 const hasHomeContent = computed(() => homeContent.value.trim().length > 0)
 const compactHomeEnabled = computed(() => appStore.cachedPublicSettings?.compact_home_enabled === true)

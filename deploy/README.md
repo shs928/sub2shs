@@ -1,6 +1,10 @@
-# Sub2API Deployment Files
+# Blessing API 部署文件
 
-This directory contains files for deploying Sub2API on Linux servers and Apple-silicon Macs.
+本目录包含 Blessing API 的前端兼容构建、发布脚本，以及从上游继承的部署工具。
+
+本项目部署入口见 [Blessing 定制与部署记录](../docs/BLESSING_CUSTOMIZATION.md)。只更新现有生产界面时，在仓库根目录运行 `node deploy/build-blessing-frontend.mjs`，再使用 `publish-blessing-frontend.py` 发布已验证的静态产物。
+
+以下通用说明保留用于维护后端。上游默认镜像和安装脚本获取的是原版程序；部署 Blessing 定制版时，使用本仓库构建的镜像或兼容前端产物。
 
 ## Deployment Methods
 

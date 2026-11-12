@@ -19,6 +19,8 @@
         </div>
       </div>
 
+      <CardRechargePanel v-if="cardPurchaseUrl" :purchase-url="cardPurchaseUrl" />
+
       <!-- Redeem Form -->
       <div class="card">
         <div class="p-6">
@@ -373,6 +375,8 @@ import { useAppStore } from '@/stores/app'
 import { useSubscriptionStore } from '@/stores/subscriptions'
 import { redeemAPI, authAPI, type RedeemHistoryItem } from '@/api'
 import AppLayout from '@/components/layout/AppLayout.vue'
+import CardRechargePanel from '@/components/common/CardRechargePanel.vue'
+import { getCardPurchaseUrl } from '@/utils/cardRecharge'
 import Icon from '@/components/icons/Icon.vue'
 import { formatDateTime } from '@/utils/format'
 
@@ -405,6 +409,7 @@ const historyTotal = ref(0)
 let historyRequest = 0
 let loadedHistoryPageSize = 20
 const contactInfo = ref('')
+const cardPurchaseUrl = ref('')
 
 // Helper functions for history display
 const isBalanceType = (type: string) => {
@@ -526,6 +531,7 @@ onMounted(async () => {
   try {
     const settings = await authAPI.getPublicSettings()
     contactInfo.value = settings.contact_info || ''
+    cardPurchaseUrl.value = getCardPurchaseUrl(settings)
   } catch (error) {
     console.error('Failed to load contact info:', error)
   }

@@ -11,31 +11,71 @@ import { fileURLToPath } from 'node:url'
 const DEFAULT_REF = 'ac1b8f1271be0d674fa6f074403c1410f30a3a81'
 const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const outputRoot = join(repoRoot, 'docs-local', 'production-frontend')
-const modules = ['blessingHome', 'blessingAuth', 'blessingGuide', 'blessingShell']
+const modules = ['blessingHome', 'blessingAuth', 'blessingGuide', 'blessingShell', 'blessingRecharge']
 
-// Explicitly scoped UI overlay: do not derive this from git diff, and do not
-// copy current admin views/types onto a frontend for an older production API.
+// Explicitly scoped UI overlay: do not derive this from git diff. Added branding
+// files were checked against the production baseline; patch the changed Settings
+// view in place instead of copying its newer API contracts.
 const overlayFiles = [
   'frontend/index.html',
   'frontend/public/logo.svg',
   'frontend/tailwind.config.js',
+  'frontend/src/components/account/CreateAccountModal.vue',
+  'frontend/src/components/account/EditAccountModal.vue',
+  'frontend/src/components/layout/AppHeader.vue',
   'frontend/src/components/layout/AppLayout.vue',
   'frontend/src/components/layout/AppSidebar.vue',
   'frontend/src/components/layout/AuthLayout.vue',
+  'frontend/src/components/modelPlaza/PlazaNavBar.vue',
+  'frontend/src/components/common/CardRechargePanel.vue',
   'frontend/src/main.ts',
   'frontend/src/router/index.ts',
+  'frontend/src/router/title.ts',
+  'frontend/src/router/__tests__/title.spec.ts',
   'frontend/src/stores/app.ts',
   'frontend/src/style.css',
   'frontend/src/styles/onboarding.css',
   'frontend/src/styles/blessing.css',
   'frontend/src/views/HomeView.vue',
   'frontend/src/views/GuideView.vue',
+  'frontend/src/views/KeyUsageView.vue',
+  'frontend/src/views/admin/ProxiesView.vue',
+  'frontend/src/views/auth/RegisterView.vue',
+  'frontend/src/views/auth/EmailVerifyView.vue',
+  'frontend/src/views/public/LegalDocumentView.vue',
   'frontend/src/views/__tests__/HomeView.compact.spec.ts',
   'frontend/src/views/user/DashboardView.vue',
+  'frontend/src/views/user/RedeemView.vue',
   'frontend/src/utils/blessingGuide.ts',
   'frontend/src/utils/__tests__/blessingGuide.spec.ts',
+  'frontend/src/utils/cardRecharge.ts',
+  'frontend/src/utils/__tests__/cardRecharge.spec.ts',
+  ...['zh', 'en'].flatMap(locale => [
+    `frontend/src/i18n/locales/${locale}/landing.ts`,
+    `frontend/src/i18n/locales/${locale}/common.ts`,
+    `frontend/src/i18n/locales/${locale}/misc.ts`,
+    `frontend/src/i18n/locales/${locale}/dashboard.ts`,
+    `frontend/src/i18n/locales/${locale}/admin/resources.ts`,
+    `frontend/src/i18n/locales/${locale}/admin/settings.ts`,
+  ]),
   ...['zh', 'en'].flatMap(locale => modules.map(name => `frontend/src/i18n/locales/${locale}/${name}.ts`)),
 ]
+
+const removedFiles = ['frontend/src/components/common/ProxyAdBanner.vue']
+const patchedFiles = ['frontend/src/views/admin/SettingsView.vue']
+
+function applyBrandingCleanup(sourceRoot) {
+  for (const file of removedFiles) {
+    const path = join(sourceRoot, file)
+    if (existsSync(path)) unlinkSync(path)
+  }
+  // Keep the production admin view and its API contracts; only update branding.
+  for (const file of patchedFiles) {
+    const path = join(sourceRoot, file)
+    const content = normalizedText(path).replaceAll('"Sub2API"', '"Blessing API"')
+    writeFileSync(path, content)
+  }
+}
 
 function run(command, args, cwd = repoRoot, capture = false) {
   const result = spawnSync(command, args, {
@@ -151,13 +191,20 @@ function main() {
       cpSync(join(repoRoot, file), destination)
     }
     injectLocales(sourceRoot)
+    applyBrandingCleanup(sourceRoot)
     symlinkSync(currentNodeModules, join(frontendRoot, 'node_modules'), process.platform === 'win32' ? 'junction' : 'dir')
 
     const nodeTool = (entry, args) => run(process.execPath, [join(frontendRoot, 'node_modules', entry), ...args], frontendRoot)
     nodeTool('vitest/vitest.mjs', ['run',
       'src/i18n/__tests__/localeKeyCompleteness.spec.ts',
       'src/utils/__tests__/blessingGuide.spec.ts',
+      'src/utils/__tests__/cardRecharge.spec.ts',
+      'src/views/user/__tests__/RedeemView.spec.ts',
+      'src/utils/__tests__/branding.spec.ts',
+      'src/router/__tests__/title.spec.ts',
       'src/views/__tests__/HomeView.compact.spec.ts',
+      'src/views/auth/__tests__/RegisterView.spec.ts',
+      'src/views/auth/__tests__/EmailVerifyView.spec.ts',
     ])
     nodeTool('vue-tsc/bin/vue-tsc.js', ['-b'])
     nodeTool('vite/bin/vite.js', ['build', '--outDir', distRoot, '--emptyOutDir'])
@@ -169,7 +216,8 @@ function main() {
       builtAt: new Date().toISOString(),
       nodeVersion: process.version,
       apiBaseUrl: '/api/v1',
-      files: Object.fromEntries(overlayFiles.map(file => [file, sha256(join(sourceRoot, file))])),
+      files: Object.fromEntries([...overlayFiles, ...patchedFiles].map(file => [file, sha256(join(sourceRoot, file))])),
+      removedFiles,
       localeIndexes: ['zh', 'en'].map(locale => `frontend/src/i18n/locales/${locale}/index.ts`),
       indexSha256: sha256(join(distRoot, 'index.html')),
     }

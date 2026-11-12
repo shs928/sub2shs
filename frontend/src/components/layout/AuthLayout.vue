@@ -14,8 +14,7 @@
     <main class="auth-main">
       <section class="auth-story" :aria-label="t('blessingAuth.aboutService')">
         <router-link v-if="settingsLoaded" to="/home" class="auth-brand">
-          <img v-if="siteLogo" :src="siteLogo" :alt="siteName" class="auth-logo" />
-          <span v-else class="auth-brand-mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+          <img :src="siteLogo || '/logo.svg'" :alt="siteName" class="auth-logo" />
           <span class="auth-brand-copy">
             <strong>{{ siteName }}</strong>
             <span>{{ t('blessingAuth.partOfHub') }}</span>
@@ -115,11 +114,7 @@ onMounted(() => {
   background: var(--hub-sage, #e9eee4);
 }
 .auth-brand { display: inline-flex; align-items: center; gap: 13px; align-self: flex-start; min-width: 0; max-width: 100%; }
-.auth-logo, .auth-brand-mark { width: 40px; height: 40px; flex-shrink: 0; }
-.auth-logo { object-fit: contain; border-radius: 10px; }
-.auth-brand-mark { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; transform: rotate(-4deg); }
-.auth-brand-mark i { background: var(--hub-accent, #ed7545); border-radius: 5px; }
-.auth-brand-mark i:last-child { border-radius: 50%; background: var(--hub-text, #2c3029); }
+.auth-logo { width: 40px; height: 40px; flex-shrink: 0; object-fit: contain; border-radius: 10px; }
 .auth-brand-copy { min-width: 0; display: flex; flex-direction: column; gap: 4px; }
 .auth-brand-copy strong { overflow-wrap: anywhere; font-size: 20px; letter-spacing: -0.6px; line-height: 1.25; }
 .auth-brand-copy > span { font-size: 10px; letter-spacing: 0.03em; color: var(--hub-muted, #86897f); }
